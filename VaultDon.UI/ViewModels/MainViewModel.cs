@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -64,6 +65,41 @@ public partial class MainViewModel : ObservableObject
     {
         SelectedCompany = null;
         SearchText = string.Empty;
+    }
+
+    [RelayCommand]
+    private void LaunchEntry(VaultEntry entry)
+    {
+        if (string.IsNullOrWhiteSpace(entry.Url)) return;
+
+        var url = entry.Url.StartsWith("http", StringComparison.OrdinalIgnoreCase)
+            ? entry.Url : "https://" + entry.Url;
+
+        try { Process.Start(new ProcessStartInfo(url) { UseShellExecute = true }); }
+        catch { }
+
+        // Step 1: copy username immediately
+        Clipboard.SetText(entry.Username);
+        StatusMessage = "🌐 Site aberto — usuário copiado! Cole no campo. Senha em 5s...";
+
+        _clearTimer?.Dispose();
+        _clearTimer = new System.Threading.Timer(_ =>
+        {
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // Step 2: swap to password after 5 s
+                Clipboard.SetText(entry.Password);
+                StatusMessage = "🔑 Senha copiada! Cole no campo. Limpa em 30s.";
+            });
+
+            // Step 3: clear clipboard after another 30 s
+            System.Threading.Thread.Sleep(30_000);
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                try { if (Clipboard.GetText() == entry.Password) Clipboard.Clear(); } catch { }
+                StatusMessage = string.Empty;
+            });
+        }, null, 5_000, System.Threading.Timeout.Infinite);
     }
 
     [RelayCommand]
