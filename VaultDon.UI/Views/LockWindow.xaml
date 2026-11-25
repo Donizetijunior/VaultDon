@@ -1,0 +1,44 @@
+<Window x:Class="VaultDon.UI.Views.LockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="VAULTDON" Height="380" Width="380"
+        WindowStyle="None" AllowsTransparency="True"
+        Background="Transparent" ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen">
+    <Border Background="{StaticResource SurfaceBrush}" CornerRadius="12"
+            BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+        <Grid>
+            <!-- Title bar -->
+            <Border VerticalAlignment="Top" Height="44" Background="{StaticResource BgBrush}"
+                    CornerRadius="12,12,0,0" MouseDown="TitleBar_MouseDown">
+                <Grid Margin="16,0">
+                    <TextBlock Text="VAULTDON" Foreground="{StaticResource AccentBrush}"
+                               FontWeight="Bold" FontSize="14" VerticalAlignment="Center"/>
+                    <Button Content="✕" Style="{StaticResource GhostButton}" HorizontalAlignment="Right"
+                            Click="Close_Click"/>
+                </Grid>
+            </Border>
+
+            <StackPanel VerticalAlignment="Center" Margin="40,44,40,0">
+                <!-- Logo -->
+                <TextBlock Text="🔐" FontSize="48" HorizontalAlignment="Center" Margin="0,20,0,8"/>
+                <TextBlock x:Name="TitleLabel" Text="Unlock Vault" Foreground="{StaticResource TextBrush}"
+                           FontSize="20" FontWeight="Bold" HorizontalAlignment="Center" Margin="0,0,0,4"/>
+                <TextBlock x:Name="SubLabel" Text="Enter your master password" Foreground="{StaticResource MutedBrush}"
+                           FontSize="13" HorizontalAlignment="Center" Margin="0,0,0,24"/>
+
+                <PasswordBox x:Name="PasswordBox" Style="{StaticResource DarkPasswordBox}"
+                             KeyDown="PasswordBox_KeyDown" Margin="0,0,0,8"/>
+                <PasswordBox x:Name="ConfirmBox" Style="{StaticResource DarkPasswordBox}"
+                             KeyDown="PasswordBox_KeyDown" Margin="0,0,0,16"
+                             Visibility="Collapsed" ToolTip="Confirm password"/>
+
+                <TextBlock x:Name="ErrorLabel" Foreground="{StaticResource DangerBrush}"
+                           FontSize="12" HorizontalAlignment="Center" Margin="0,0,0,12" Visibility="Collapsed"/>
+
+                <Button x:Name="UnlockButton" Content="Unlock" Style="{StaticResource PrimaryButton}"
+                        HorizontalAlignment="Stretch" Click="Unlock_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window>
