@@ -33,6 +33,7 @@ public partial class EntryDialog : Window
         DataContext = _vm;
         InitializeComponent();
         if (entry is not null) PasswordHidden.Password = entry.Password;
+        PasswordHidden.PasswordChanged += (_, _) => _vm.Password = PasswordHidden.Password;
     }
 
     private void TitleBar_MouseDown(object sender, MouseButtonEventArgs e)
