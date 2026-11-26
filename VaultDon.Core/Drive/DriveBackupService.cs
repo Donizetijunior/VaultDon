@@ -64,31 +64,39 @@ public class DriveBackupService
 
         // SQLite keeps an exclusive lock on vault.db while the app runs.
         // Use the SQLite online-backup API to get a consistent copy we can upload.
-        var tempPath = Path.Combine(Path.GetTempPath(), "vaultdon_backup_tmp.db");
-        using (var src = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={localDbPath};Mode=ReadOnly"))
-        using (var dst = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={tempPath}"))
+        var tempPath = Path.Combine(Path.GetTempPath(), $"vaultdon_backup_{Guid.NewGuid():N}.db");
+        try
         {
-            src.Open();
-            dst.Open();
-            src.BackupDatabase(dst);
-        }
-
-        await using var stream = System.IO.File.OpenRead(tempPath);
-
-        if (existingId is not null)
-        {
-            var updateReq = service.Files.Update(new Google.Apis.Drive.v3.Data.File(), existingId, stream, "application/octet-stream");
-            await updateReq.UploadAsync();
-        }
-        else
-        {
-            var meta = new Google.Apis.Drive.v3.Data.File
+            using (var src = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={localDbPath};Mode=ReadOnly"))
+            using (var dst = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={tempPath}"))
             {
-                Name = BackupFileName,
-                Parents = [folderId]
-            };
-            var createReq = service.Files.Create(meta, stream, "application/octet-stream");
-            await createReq.UploadAsync();
+                src.Open();
+                dst.Open();
+                src.BackupDatabase(dst);
+            }
+
+            await using var stream = System.IO.File.OpenRead(tempPath);
+
+            if (existingId is not null)
+            {
+                var updateReq = service.Files.Update(new Google.Apis.Drive.v3.Data.File(), existingId, stream, "application/octet-stream");
+                await updateReq.UploadAsync();
+            }
+            else
+            {
+                var meta = new Google.Apis.Drive.v3.Data.File
+                {
+                    Name = BackupFileName,
+                    Parents = [folderId]
+                };
+                var createReq = service.Files.Create(meta, stream, "application/octet-stream");
+                await createReq.UploadAsync();
+            }
+        }
+        finally
+        {
+            if (System.IO.File.Exists(tempPath))
+                System.IO.File.Delete(tempPath);
         }
     }
 
