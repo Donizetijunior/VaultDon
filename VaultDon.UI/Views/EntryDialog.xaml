@@ -31,7 +31,8 @@
             </Border>
 
             <!-- Form -->
-            <StackPanel Grid.Row="1" Margin="20,16">
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="20,16">
                 <TextBlock Text="Company / Category" Foreground="{StaticResource MutedBrush}" FontSize="11" Margin="0,0,0,4"/>
                 <TextBox Style="{StaticResource DarkTextBox}" Text="{Binding Company, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,0,12"/>
 
@@ -58,6 +59,7 @@
                 <TextBox Style="{StaticResource DarkTextBox}" Text="{Binding Notes, UpdateSourceTrigger=PropertyChanged}"
                          Height="60" TextWrapping="Wrap" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"/>
             </StackPanel>
+            </ScrollViewer>
 
             <!-- Buttons -->
             <Grid Grid.Row="2" Margin="20,0">
