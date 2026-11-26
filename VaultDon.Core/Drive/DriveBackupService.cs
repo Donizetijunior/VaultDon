@@ -25,8 +25,9 @@ public class DriveBackupService
             throw new FileNotFoundException($"Google client JSON not found at {_clientJsonPath}. Please place your OAuth client config there.");
 
         var json = await System.IO.File.ReadAllTextAsync(_clientJsonPath);
-        var secrets = JsonConvert.DeserializeObject<ClientSecrets>(json) ??
-                      ParseFromInstalledApp(json);
+        var secrets = JsonConvert.DeserializeObject<ClientSecrets>(json);
+        if (string.IsNullOrEmpty(secrets?.ClientId))
+            secrets = ParseFromInstalledApp(json);
 
         var credentialPath = Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
