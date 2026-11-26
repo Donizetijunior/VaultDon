@@ -67,13 +67,14 @@ public class DriveBackupService
         var tempPath = Path.Combine(Path.GetTempPath(), $"vaultdon_backup_{Guid.NewGuid():N}.db");
         try
         {
-            using (var src = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={localDbPath};Mode=ReadOnly"))
-            using (var dst = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={tempPath}"))
+            using (var src = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={localDbPath};Mode=ReadOnly;Pooling=False"))
+            using (var dst = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={tempPath};Pooling=False"))
             {
                 src.Open();
                 dst.Open();
                 src.BackupDatabase(dst);
             }
+            Microsoft.Data.Sqlite.SqliteConnection.ClearAllPools();
 
             await using var stream = System.IO.File.OpenRead(tempPath);
 
