@@ -62,7 +62,18 @@ public class DriveBackupService
 
         var existingId = await FindBackupFileAsync(service, folderId);
 
-        await using var stream = System.IO.File.OpenRead(localDbPath);
+        // SQLite keeps an exclusive lock on vault.db while the app runs.
+        // Use the SQLite online-backup API to get a consistent copy we can upload.
+        var tempPath = Path.Combine(Path.GetTempPath(), "vaultdon_backup_tmp.db");
+        using (var src = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={localDbPath};Mode=ReadOnly"))
+        using (var dst = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={tempPath}"))
+        {
+            src.Open();
+            dst.Open();
+            src.BackupDatabase(dst);
+        }
+
+        await using var stream = System.IO.File.OpenRead(tempPath);
 
         if (existingId is not null)
         {
