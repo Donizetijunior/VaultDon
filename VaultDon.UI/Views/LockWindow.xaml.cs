@@ -88,5 +88,6 @@ public partial class LockWindow : Window
     {
         ErrorLabel.Text = msg;
         ErrorLabel.Visibility = Visibility.Visible;
+        ErrorBorder.Visibility = Visibility.Visible;
     }
 }

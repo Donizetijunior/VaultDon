@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:vm="clr-namespace:VaultDon.UI.ViewModels"
-        Title="VAULTDON" Height="680" Width="1050"
+        Title="VAULTDON" Height="700" Width="1080"
         WindowStyle="None" AllowsTransparency="True"
-        Background="Transparent" MinHeight="400" MinWidth="700"
+        Background="Transparent" MinHeight="460" MinWidth="720"
         WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVis"/>
@@ -12,161 +12,311 @@
         <vm:NullToVisibilityConverter x:Key="NullToVis"/>
     </Window.Resources>
 
-    <Border Background="{StaticResource BgBrush}" CornerRadius="10"
+    <Border Background="{StaticResource BgBrush}" CornerRadius="12"
             BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+        <Border.Effect>
+            <DropShadowEffect Color="#000000" BlurRadius="40" ShadowDepth="0" Opacity="0.5"/>
+        </Border.Effect>
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="48"/>
+                <RowDefinition Height="52"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="32"/>
+                <RowDefinition Height="30"/>
             </Grid.RowDefinitions>
 
-            <!-- Title bar -->
-            <Border Grid.Row="0" Background="{StaticResource SurfaceBrush}"
-                    CornerRadius="10,10,0,0" MouseDown="TitleBar_MouseDown">
-                <Grid Margin="16,0">
+            <!-- ═══ TITLE BAR ═══ -->
+            <Border Grid.Row="0" CornerRadius="12,12,0,0" MouseDown="TitleBar_MouseDown">
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#161F32" Offset="0"/>
+                        <GradientStop Color="#1A2744" Offset="1"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid Margin="18,0,12,0">
+                    <!-- Left: logo + title -->
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="🔐" FontSize="16" Margin="0,0,8,0"/>
-                        <TextBlock Text="VAULTDON" Foreground="{StaticResource AccentBrush}"
-                                   FontWeight="Bold" FontSize="15" VerticalAlignment="Center"/>
+                        <!-- Padlock icon -->
+                        <Canvas Width="20" Height="20" Margin="0,0,10,0">
+                            <Path Canvas.Left="3" Canvas.Top="9" Fill="{StaticResource AccentBrush}">
+                                <Path.Data>M 0,0 H 14 A 2,2 0 0 1 16,2 V 9 A 2,2 0 0 1 14,11 H 0 A 2,2 0 0 1 -2,9 V 2 A 2,2 0 0 1 0,0 Z</Path.Data>
+                            </Path>
+                            <Path Canvas.Left="5" Canvas.Top="1" Stroke="{StaticResource AccentBrush}"
+                                  StrokeThickness="1.8" Fill="Transparent">
+                                <Path.Data>M 0,8 L 0,4 A 4.5,4.5 0 0 1 9,4 L 9,8</Path.Data>
+                            </Path>
+                        </Canvas>
+                        <TextBlock Text="VAULT" Foreground="{StaticResource TextBrush}"
+                                   FontWeight="Bold" FontSize="16" VerticalAlignment="Center"
+                                   FontFamily="Segoe UI"/>
+                        <TextBlock Text="DON" Foreground="{StaticResource AccentBrush}"
+                                   FontWeight="Bold" FontSize="16" VerticalAlignment="Center"
+                                   FontFamily="Segoe UI"/>
                     </StackPanel>
+
+                    <!-- Right: actions + window controls -->
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <Button Content="Drive ↑" Style="{StaticResource GhostButton}" Margin="0,0,4,0"
-                                Command="{Binding BackupToDriveCommand}" ToolTip="Backup to Google Drive"/>
-                        <Button Content="Drive ↓" Style="{StaticResource GhostButton}" Margin="0,0,12,0"
-                                Command="{Binding RestoreFromDriveCommand}" ToolTip="Restore from Google Drive"/>
-                        <Button Content="─" Style="{StaticResource GhostButton}" Margin="0,0,4,0"
-                                Click="Minimize_Click"/>
+                        <!-- Drive backup -->
+                        <Button Style="{StaticResource GhostButton}" Margin="0,0,2,0"
+                                Command="{Binding BackupToDriveCommand}"
+                                ToolTip="Backup to Google Drive"
+                                Padding="10,6">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="↑" FontSize="13" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Drive" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Style="{StaticResource GhostButton}" Margin="0,0,12,0"
+                                Command="{Binding RestoreFromDriveCommand}"
+                                ToolTip="Restore from Google Drive"
+                                Padding="10,6">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="↓" FontSize="13" Margin="0,0,4,0" VerticalAlignment="Center"/>
+                                <TextBlock Text="Drive" FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
+                        <!-- Separator dot -->
+                        <Ellipse Width="4" Height="4" Fill="{StaticResource BorderBrush}" Margin="0,0,12,0" VerticalAlignment="Center"/>
+                        <!-- Window controls -->
+                        <Button Content="─" Style="{StaticResource GhostButton}" Margin="0,0,2,0"
+                                Click="Minimize_Click" Padding="10,6"/>
                         <Button Content="✕" Style="{StaticResource GhostButton}"
-                                Click="Close_Click"/>
+                                Click="Close_Click" Padding="10,6"/>
                     </StackPanel>
                 </Grid>
             </Border>
 
-            <!-- Main content -->
+            <!-- ═══ MAIN CONTENT ═══ -->
             <Grid Grid.Row="1">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
-                    <ColumnDefinition Width="1"/>
+                    <ColumnDefinition Width="210"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <!-- Sidebar -->
-                <Grid Grid.Column="0" Background="{StaticResource SurfaceBrush}">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
+                <!-- ─── SIDEBAR ─── -->
+                <Border Grid.Column="0" Background="{StaticResource SurfaceBrush}">
+                    <Border.BorderBrush><SolidColorBrush Color="#334155"/></Border.BorderBrush>
+                    <Border.BorderThickness>0,0,1,0</Border.BorderThickness>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Row="0" Text="CATEGORIES" Foreground="{StaticResource MutedBrush}"
-                               FontSize="10" FontWeight="SemiBold" Margin="16,16,0,8"/>
+                        <!-- Section header -->
+                        <StackPanel Grid.Row="0" Margin="16,18,16,10">
+                            <TextBlock Text="CATEGORIES" Style="{StaticResource SectionHeader}"/>
+                        </StackPanel>
 
-                    <ListBox Grid.Row="1" ItemsSource="{Binding Companies}"
-                             SelectedItem="{Binding SelectedCompany}"
-                             Background="Transparent" BorderThickness="0"
-                             ItemContainerStyle="{StaticResource SidebarItem}"
-                             Margin="8,0">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding}" FontSize="13"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
+                        <!-- Category list -->
+                        <ListBox Grid.Row="1"
+                                 ItemsSource="{Binding Companies}"
+                                 SelectedItem="{Binding SelectedCompany}"
+                                 Background="Transparent" BorderThickness="0"
+                                 ItemContainerStyle="{StaticResource SidebarItem}"
+                                 Padding="6,0,6,0">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="▸" Foreground="Transparent"
+                                                   FontSize="10" VerticalAlignment="Center"
+                                                   Margin="0,0,8,0">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=ListBoxItem}}" Value="True">
+                                                            <Setter Property="Foreground" Value="#0F172A"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <TextBlock Text="{Binding}" FontSize="13" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
 
-                    <Button Grid.Row="2" Content="Clear Filter" Style="{StaticResource GhostButton}"
-                            Margin="8,8" HorizontalAlignment="Stretch"
-                            Command="{Binding ClearFilterCommand}"/>
-                </Grid>
+                        <!-- Bottom clear filter -->
+                        <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{StaticResource BorderBrush}"
+                                Padding="10,10">
+                            <Button Style="{StaticResource SidebarActionButton}"
+                                    HorizontalAlignment="Stretch"
+                                    Command="{Binding ClearFilterCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Text="✕" FontSize="11" Margin="0,0,6,0" VerticalAlignment="Center"/>
+                                    <TextBlock Text="Clear Filter" FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Button>
+                        </Border>
+                    </Grid>
+                </Border>
 
-                <!-- Divider -->
-                <Border Grid.Column="1" Background="{StaticResource BorderBrush}"/>
-
-                <!-- Entry list -->
-                <Grid Grid.Column="2" Margin="20,16">
+                <!-- ─── ENTRY LIST ─── -->
+                <Grid Grid.Column="1" Margin="24,20">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
                     <!-- Toolbar -->
-                    <Grid Grid.Row="0" Margin="0,0,0,12">
-                        <TextBox Style="{StaticResource DarkTextBox}"
-                                 Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
-                                 Margin="0,0,110,0">
-                            <TextBox.InputBindings>
-                                <KeyBinding Key="Escape" Command="{Binding ClearFilterCommand}"/>
-                            </TextBox.InputBindings>
-                        </TextBox>
-                        <TextBlock Text="Search..." Foreground="{StaticResource MutedBrush}" FontSize="13"
-                                   Margin="12,0,0,0" VerticalAlignment="Center" IsHitTestVisible="False">
-                            <TextBlock.Style>
-                                <Style TargetType="TextBlock">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding SearchText}" Value="">
-                                            <Setter Property="Visibility" Value="Visible"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </TextBlock.Style>
-                        </TextBlock>
-                        <Button Content="+ Add Entry" Style="{StaticResource PrimaryButton}"
-                                HorizontalAlignment="Right" Command="{Binding AddEntryCommand}"/>
+                    <Grid Grid.Row="0" Margin="0,0,0,16">
+                        <!-- Search box with icon -->
+                        <Grid>
+                            <TextBox Style="{StaticResource SearchTextBox}"
+                                     Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                     Margin="0,0,116,0">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Key="Escape" Command="{Binding ClearFilterCommand}"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                            <!-- Search icon -->
+                            <TextBlock Text="🔍" FontSize="13" Margin="14,0,0,0"
+                                       VerticalAlignment="Center" IsHitTestVisible="False"
+                                       Opacity="0.5"/>
+                            <!-- Placeholder -->
+                            <TextBlock Text="Search entries..." Foreground="{StaticResource MutedBrush}"
+                                       FontSize="13" FontFamily="Segoe UI"
+                                       Margin="40,0,0,0" VerticalAlignment="Center"
+                                       IsHitTestVisible="False">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding SearchText}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                        <Button Style="{StaticResource PrimaryButton}"
+                                HorizontalAlignment="Right" Command="{Binding AddEntryCommand}"
+                                Padding="16,9">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="+" FontSize="16" Margin="0,0,6,0"
+                                           VerticalAlignment="Center" FontWeight="Light"/>
+                                <TextBlock Text="Add Entry" FontSize="13" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Button>
                     </Grid>
 
                     <!-- Entries -->
-                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                        <ItemsControl ItemsSource="{Binding FilteredEntries}">
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl ItemsSource="{Binding FilteredEntries}" Padding="0,0,4,0">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Background="{StaticResource SurfaceBrush}" CornerRadius="8"
-                                            Margin="0,0,0,8" Padding="16,12">
+                                    <Border CornerRadius="10" Margin="0,0,0,8" Padding="18,14">
+                                        <Border.Background>
+                                            <SolidColorBrush Color="{StaticResource SurfaceColor}"/>
+                                        </Border.Background>
+                                        <Border.BorderBrush>
+                                            <SolidColorBrush Color="{StaticResource BorderColor}"/>
+                                        </Border.BorderBrush>
+                                        <Border.BorderThickness>1</Border.BorderThickness>
+                                        <Border.Style>
+                                            <Style TargetType="Border">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="BorderBrush" Value="{StaticResource AccentBrush}"/>
+                                                        <Setter Property="Background" Value="{StaticResource Surface2Brush}"/>
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
-                                            <StackPanel Grid.Column="0">
-                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
-                                                    <TextBlock Text="{Binding Company}" Foreground="{StaticResource AccentBrush}"
-                                                               FontSize="11" FontWeight="SemiBold" Margin="0,0,6,0"/>
-                                                    <TextBlock Text="{Binding Label}" Foreground="{StaticResource TextBrush}"
-                                                               FontSize="14" FontWeight="SemiBold"/>
+
+                                            <!-- Entry info -->
+                                            <StackPanel Grid.Column="0" VerticalAlignment="Center">
+                                                <!-- Title row: company tag + label -->
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,6">
+                                                    <Border Background="{StaticResource Surface3Brush}"
+                                                            CornerRadius="4" Padding="6,2" Margin="0,0,8,0">
+                                                        <TextBlock Text="{Binding Company}"
+                                                                   Foreground="{StaticResource AccentBrush}"
+                                                                   FontSize="10" FontWeight="SemiBold"
+                                                                   FontFamily="Segoe UI"/>
+                                                    </Border>
+                                                    <TextBlock Text="{Binding Label}"
+                                                               Foreground="{StaticResource TextBrush}"
+                                                               FontSize="15" FontWeight="SemiBold"
+                                                               FontFamily="Segoe UI"
+                                                               VerticalAlignment="Center"/>
                                                 </StackPanel>
+
                                                 <!-- Username row -->
-                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
-                                                    <TextBlock Text="👤" FontSize="11" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="{Binding Username}" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
-                                                    <Button Style="{StaticResource IconButton}" Content="⎘" ToolTip="Copy Username"
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                                                    <TextBlock Text="👤" FontSize="11"
+                                                               Margin="0,0,6,0" VerticalAlignment="Center"
+                                                               Opacity="0.6"/>
+                                                    <TextBlock Text="{Binding Username}"
+                                                               Foreground="{StaticResource MutedBrush}"
+                                                               FontSize="12" FontFamily="Segoe UI"
+                                                               VerticalAlignment="Center"/>
+                                                    <Button Style="{StaticResource IconButton}"
+                                                            Content="⎘" ToolTip="Copy Username"
+                                                            Width="24" Height="24"
                                                             Command="{Binding DataContext.CopyUsernameCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}" Margin="6,0,0,0"/>
+                                                            CommandParameter="{Binding}"
+                                                            Margin="6,0,0,0"/>
                                                 </StackPanel>
+
                                                 <!-- Password row -->
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="🔑" FontSize="11" Margin="0,0,4,0" VerticalAlignment="Center"/>
-                                                    <TextBlock Text="••••••••" Foreground="{StaticResource MutedBrush}" FontSize="12"/>
-                                                    <Button Style="{StaticResource IconButton}" Content="⎘" ToolTip="Copy Password"
+                                                <StackPanel Orientation="Horizontal" Margin="0,0,0,2">
+                                                    <TextBlock Text="🔑" FontSize="11"
+                                                               Margin="0,0,6,0" VerticalAlignment="Center"
+                                                               Opacity="0.6"/>
+                                                    <TextBlock Text="••••••••"
+                                                               Foreground="{StaticResource MutedBrush}"
+                                                               FontSize="12" FontFamily="Segoe UI"
+                                                               VerticalAlignment="Center"/>
+                                                    <Button Style="{StaticResource IconButton}"
+                                                            Content="⎘" ToolTip="Copy Password"
+                                                            Width="24" Height="24"
                                                             Command="{Binding DataContext.CopyPasswordCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                            CommandParameter="{Binding}" Margin="6,0,0,0"/>
+                                                            CommandParameter="{Binding}"
+                                                            Margin="6,0,0,0"/>
                                                 </StackPanel>
+
                                                 <!-- URL -->
-                                                <TextBlock Text="{Binding Url}" Foreground="{StaticResource MutedBrush}"
-                                                           FontSize="11" Margin="0,4,0,0" Opacity="0.7"
+                                                <TextBlock Text="{Binding Url}"
+                                                           Foreground="{StaticResource MutedBrush}"
+                                                           FontSize="11" FontFamily="Segoe UI"
+                                                           Margin="0,4,0,0" Opacity="0.65"
                                                            Visibility="{Binding Url, Converter={StaticResource NullToVis}}"/>
                                             </StackPanel>
-                                            <!-- Actions -->
-                                            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top">
-                                                <Button Style="{StaticResource GhostButton}" Content="🚀" ToolTip="Abrir site e preencher automaticamente"
+
+                                            <!-- Action buttons -->
+                                            <StackPanel Grid.Column="1" Orientation="Horizontal"
+                                                        VerticalAlignment="Center" Margin="8,0,0,0">
+                                                <Button Style="{StaticResource IconButton}" Width="32" Height="32"
+                                                        ToolTip="Open site and auto-fill"
                                                         Command="{Binding DataContext.LaunchEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"
                                                         CommandParameter="{Binding}"
-                                                        Visibility="{Binding Url, Converter={StaticResource NullToVis}}"/>
-                                                <Button Style="{StaticResource GhostButton}" Content="✏" ToolTip="Edit"
+                                                        Visibility="{Binding Url, Converter={StaticResource NullToVis}}"
+                                                        Margin="0,0,2,0">
+                                                    <TextBlock Text="🚀" FontSize="14"/>
+                                                </Button>
+                                                <Button Style="{StaticResource IconButton}" Width="32" Height="32"
+                                                        ToolTip="Edit entry"
                                                         Command="{Binding DataContext.EditEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}"/>
-                                                <Button Style="{StaticResource DangerButton}" Content="🗑" ToolTip="Delete"
+                                                        CommandParameter="{Binding}"
+                                                        Margin="0,0,2,0">
+                                                    <TextBlock Text="✏" FontSize="14"/>
+                                                </Button>
+                                                <Button Style="{StaticResource DangerButton}" Width="32" Height="32"
+                                                        Padding="0"
+                                                        ToolTip="Delete entry"
                                                         Command="{Binding DataContext.DeleteEntryCommand, RelativeSource={RelativeSource AncestorType=Window}}"
-                                                        CommandParameter="{Binding}"/>
+                                                        CommandParameter="{Binding}">
+                                                    <TextBlock Text="🗑" FontSize="14"/>
+                                                </Button>
                                             </StackPanel>
                                         </Grid>
                                     </Border>
@@ -177,10 +327,24 @@
                 </Grid>
             </Grid>
 
-            <!-- Status bar -->
-            <Border Grid.Row="2" Background="{StaticResource SurfaceBrush}" CornerRadius="0,0,10,10">
-                <TextBlock Text="{Binding StatusMessage}" Foreground="{StaticResource AccentBrush}"
-                           FontSize="11" VerticalAlignment="Center" Margin="16,0"/>
+            <!-- ═══ STATUS BAR ═══ -->
+            <Border Grid.Row="2" CornerRadius="0,0,12,12" Background="{StaticResource SurfaceBrush}"
+                    BorderBrush="{StaticResource BorderBrush}" BorderThickness="0,1,0,0">
+                <Grid Margin="16,0">
+                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                        <!-- Status dot -->
+                        <Ellipse Width="6" Height="6" Fill="{StaticResource AccentBrush}"
+                                 Margin="0,0,8,0" Opacity="0.8"/>
+                        <TextBlock Text="{Binding StatusMessage}"
+                                   Foreground="{StaticResource MutedBrush}"
+                                   FontSize="11" FontFamily="Segoe UI"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+                    <TextBlock Text="VAULTDON" Foreground="{StaticResource MutedBrush}"
+                               FontSize="10" FontFamily="Segoe UI"
+                               HorizontalAlignment="Right" VerticalAlignment="Center"
+                               Opacity="0.4"/>
+                </Grid>
             </Border>
         </Grid>
     </Border>

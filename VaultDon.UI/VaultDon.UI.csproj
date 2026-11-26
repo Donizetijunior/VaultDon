@@ -8,12 +8,21 @@
     <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Resource Include="Resources\vault.ico"/>
+  </ItemGroup>
+
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
     <TargetFramework>net8.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
+    <ApplicationIcon>Resources\vault.ico</ApplicationIcon>
+    <AssemblyTitle>VaultDon</AssemblyTitle>
+    <Product>VaultDon Password Manager</Product>
+    <Company>VaultDon</Company>
+    <Copyright>© 2025 VaultDon</Copyright>
   </PropertyGroup>
 
 </Project>
